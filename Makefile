@@ -1,6 +1,18 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: barbizu- <barbizu-@student.42malaga.com>   +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/05/26 11:17:28 by barbizu-          #+#    #+#              #
+#    Updated: 2022/06/07 16:14:35 by barbizu-         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = pipex
 
-SRCS = pipex.c
+SRCS = pipex.c pipex_utils.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -8,23 +20,22 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
-.c.o:
-	${CC} ${CFLAGS} -g -c $< -I libft -o ${<:.c=.o}
-
-${NAME}: ${OBJS}
-		@make -C libft
-		@cp libft/libft.a ${NAME}
-		ar -rc ${NAME} ${OBJS}
+${NAME}: libft
+		${CC} ${CFLAGS} ${SRCS} -L ./libft -lft -o ${NAME}
 
 all:	${NAME}
 
-clean:
-		${RM} ${OBJS}
-		@make -sC ./libft/ clean
+libft:
+	make -C ./libft
 
-fclean:
-		${RM} ${NAME}
+clean:
+		${RM} -f ${OBJS}
+		make clean -C ./libft
+
+fclean:	clean
+		make fclean -C ./libft
+		${RM} -f ${NAME}
 
 re:		fclean ${MAKE} ${NAME}
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re libft
